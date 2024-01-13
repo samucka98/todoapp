@@ -8,7 +8,7 @@ namespace todoapp.Controllers
     [HttpGet("/")]
     public string Get()
     {
-      return "Hello World Controller";
+      return "Home Controller";
     }
   }
 }
