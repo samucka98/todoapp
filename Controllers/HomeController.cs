@@ -26,5 +26,21 @@ namespace todoapp.Controllers
     {
       return context.Todos.FirstOrDefault(x => x.Id == id);
     }
+
+    [HttpPut("/{id:int}")]
+    public Todo Put([FromRoute] int id, [FromBody] Todo todo, [FromServices] AppDbContext context)
+    {
+      var model = context.Todos.FirstOrDefault(x => x.Id == id);
+      if (model == null)
+        return todo;
+
+      model.Title = todo.Title;
+      model.Done = todo.Done;
+
+      context.Update(model);
+      context.SaveChanges();
+
+      return model;
+    }
   }
 }
