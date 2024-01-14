@@ -14,7 +14,7 @@ namespace todoapp.Controllers
     }
 
     [HttpPost("/")]
-    public Todo Post(Todo todo, [FromServices] AppDbContext context)
+    public Todo Post([FromBody] Todo todo, [FromServices] AppDbContext context)
     {
       context.Add(todo);
       context.SaveChanges();
