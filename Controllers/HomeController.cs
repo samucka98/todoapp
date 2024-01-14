@@ -8,31 +8,33 @@ namespace todoapp.Controllers
   public class HomeController : ControllerBase
   {
     [HttpGet("/")]
-    public List<Todo> Get([FromServices] AppDbContext context)
-    {
-      return context.Todos.ToList();
-    }
+    public IActionResult Get([FromServices] AppDbContext context)
+      => Ok(context.Todos.ToList());
 
     [HttpPost("/")]
-    public Todo Post([FromBody] Todo todo, [FromServices] AppDbContext context)
+    public IActionResult Post([FromBody] Todo todo, [FromServices] AppDbContext context)
     {
       context.Add(todo);
       context.SaveChanges();
-      return todo;
+      return Ok(todo);
     }
 
     [HttpGet("/{id:int}")]
-    public Todo GetById([FromRoute] int id, [FromServices] AppDbContext context)
-    {
-      return context.Todos.FirstOrDefault(x => x.Id == id);
-    }
-
-    [HttpPut("/{id:int}")]
-    public Todo Put([FromRoute] int id, [FromBody] Todo todo, [FromServices] AppDbContext context)
+    public IActionResult GetById([FromRoute] int id, [FromServices] AppDbContext context)
     {
       var model = context.Todos.FirstOrDefault(x => x.Id == id);
       if (model == null)
-        return todo;
+        return NotFound();
+
+      return Ok(model);
+    }
+
+    [HttpPut("/{id:int}")]
+    public IActionResult Put([FromRoute] int id, [FromBody] Todo todo, [FromServices] AppDbContext context)
+    {
+      var model = context.Todos.FirstOrDefault(x => x.Id == id);
+      if (model == null)
+        return NotFound();
 
       model.Title = todo.Title;
       model.Done = todo.Done;
@@ -40,16 +42,18 @@ namespace todoapp.Controllers
       context.Update(model);
       context.SaveChanges();
 
-      return model;
+      return Ok(model);
     }
 
     [HttpDelete("/{id:int}")]
-    public Todo Delete([FromRoute] int id, [FromServices] AppDbContext context)
+    public IActionResult Delete([FromRoute] int id, [FromServices] AppDbContext context)
     {
       var model = context.Todos.FirstOrDefault(x => x.Id == id);
+      if (model == null)
+        return NotFound();
       context.Todos.Remove(model);
       context.SaveChanges();
-      return model;
+      return Ok(model);
     }
   }
 }
