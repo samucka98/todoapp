@@ -20,5 +20,11 @@ namespace todoapp.Controllers
       context.SaveChanges();
       return todo;
     }
+
+    [HttpGet("/{id:int}")]
+    public Todo GetById([FromRoute] int id, [FromServices] AppDbContext context)
+    {
+      return context.Todos.FirstOrDefault(x => x.Id == id);
+    }
   }
 }
